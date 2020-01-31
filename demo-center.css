@@ -131,6 +131,16 @@ h4 {
   font-weight: bold;
   font-size:18px;
 }
+.output-result {
+  text-align:left;
+  font-weight: normal;
+  font-size:16px;
+}
+.output-title {
+  text-align:center;
+  font-weight: normal;
+  font-size:16px;
+}
 
 .input-item {
   position: relative;
