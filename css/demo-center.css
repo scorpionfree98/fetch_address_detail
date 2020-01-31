@@ -129,6 +129,7 @@ h4 {
 .input-title {
   text-align:center;
   font-weight: bold;
+  line-height: 3;
   font-size:18px;
 }
 .output-result {
@@ -139,7 +140,21 @@ h4 {
 .output-title {
   text-align:center;
   font-weight: normal;
+  line-height: 2;
   font-size:16px;
+}
+
+.input-subtitle {
+  position: relative;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -ms-flex-align: center;
+  align-items: center;
+  width: 100%;
+  text-indent: 2em;
+  height: 3rem;
 }
 
 .input-item {
