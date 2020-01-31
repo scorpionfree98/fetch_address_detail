@@ -42,36 +42,25 @@
             <div class="input-item-prepend"><span class="input-item-text">街道/乡镇</span></div>
             <input id='street' disabled type="text">
     </div>
-    <input id="geo" type="button" class="btn" value="地址 -> 详细信息" />
+    <input id="geo" type="button" class="btn" value="查询一下" />
+    
+    <div>
+        <div class='output-title'>当前查询地址:</div>
+        <div class='output-result' id='address_2'></div>
+    </div>
 
-    <div>
-        <button id='start'>开始选点</button>
-        <button id='stop'>关闭选点</button>
-    </div>
-    <div>
-        <div class='title'>选址结果</div>
-        <div class='c'>经纬度:</div>
-        <div id='lnglat'></div>
-        <div class='c'>地址:</div>
-        <div id='address'></div>
-        <div class='c'>最近的路口:</div>
-        <div id='nearestJunction'></div>
-        <div class='c'>最近的路:</div>
-        <div id='nearestRoad'></div>
-        <div class='c'>最近的POI:</div>
-        <div id='nearestPOI'></div>
-    </div>
 </div>
 <script src="https://a.amap.com/jsapi_demos/static/demo-center/js/demoutils.js"></script>
 <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=160cab8ad6c50752175d76e61ef92c50&plugin=AMap.Geocoder"></script>
 <script type="text/javascript" src='https://webapi.amap.com/maps?v=1.4.15&key=160cab8ad6c50752175d76e61ef92c50&plugin=AMap.ToolBar'></script>
 <script src="https://webapi.amap.com/ui/1.0/main.js?v=1.0.11"></script>
-    <script type="text/javascript">
+<script type="text/javascript">
         
     AMapUI.loadUI(['misc/PositionPicker'], function(PositionPicker) {
         var map = new AMap.Map('container', {
             zoom: 16,
-            scrollWheel: false
+            scrollWheel: true,
+            resizeEnable: true
         })
         var positionPicker = new PositionPicker({
             mode: 'dragMap',
@@ -79,14 +68,40 @@
         });
 
         
-     function geoCode() {
+
+        function geoCode() {
         var geocoder = new AMap.Geocoder({
         });
         var address  = document.getElementById('address').value;
-        geocoder.getLocation(address, function(status, result) {
-            if (status === 'complete'&&result.geocodes.length) {
-                var lnglat = result.geocodes[0].location
-                geocoder.getAddress(lnglat, function(status, result) {
+            geocoder.getLocation(address, function(status, result) {
+                if (status === 'complete'&&result.geocodes.length) {
+                    var lnglat = result.geocodes[0].location
+                    geocoder.getAddress(lnglat, function(status, result) {
+                        if (status === 'complete'&&result.regeocode) {
+                            var street = result.regeocode.addressComponent.township
+                            document.getElementById('province').value = result.regeocode.addressComponent.province;
+                            document.getElementById('city').value = result.regeocode.addressComponent.city;
+                            document.getElementById('district').value = result.regeocode.addressComponent.district;
+                            document.getElementById('street').value = street;
+                            
+                        }else{
+                            log.error('根据地址查询地址失败')
+                        }
+                    });
+                    map.setCenter(lnglat);
+                    positionPicker.start(map.getBounds().getCenter())
+                }else{
+                    log.error('根据地址查询位置失败');
+                }
+            });
+        }
+
+        positionPicker.on('success', function(positionResult) {
+            var geocoder = new AMap.Geocoder({
+            });
+            
+            document.getElementById('address_2').innerHTML = positionResult.address;
+            geocoder.getAddress(positionResult.position, function(status, result) {
                     if (status === 'complete'&&result.regeocode) {
                         var street = result.regeocode.addressComponent.township
                         document.getElementById('province').value = result.regeocode.addressComponent.province;
@@ -97,55 +112,25 @@
                         log.error('根据地址查询地址失败')
                     }
                 });
-                marker.setPosition(lnglat);
-                map.add(marker);
-                map.setFitView(marker);
-            }else{
-                log.error('根据地址查询位置失败');
-            }
-        });
-        }
-
-        positionPicker.on('success', function(positionResult) {
-            document.getElementById('lnglat').innerHTML = positionResult.position;
-            document.getElementById('address').innerHTML = positionResult.address;
-            document.getElementById('nearestJunction').innerHTML = positionResult.nearestJunction;
-            document.getElementById('nearestRoad').innerHTML = positionResult.nearestRoad;
-            document.getElementById('nearestPOI').innerHTML = positionResult.nearestPOI;
         });
         positionPicker.on('fail', function(positionResult) {
-            document.getElementById('lnglat').innerHTML = ' ';
-            document.getElementById('address').innerHTML = ' ';
-            document.getElementById('nearestJunction').innerHTML = ' ';
-            document.getElementById('nearestRoad').innerHTML = ' ';
-            document.getElementById('nearestPOI').innerHTML = ' ';
+            document.getElementById('province').value = '超出查询范围';
+            
         });
-        var startButton = document.getElementById('start');
-        var stopButton = document.getElementById('stop');
         var getplace = document.getElementById("geo");
         var getAddresskey = document.getElementById('address')
-        AMap.event.addDomListener(startButton, 'click', function() {
-            positionPicker.start(map.getBounds().getSouthWest())
-        })
-        AMap.event.addDomListener(stopButton, 'click', function() {
-            positionPicker.stop();
-        })
         AMap.event.addDomListener(getplace, 'click', function() {
-            console.log('HELLO');
             geoCode();
         })
         AMap.event.addDomListener(getAddresskey, 'keydown', function(e) {
-            console.log('HELLO_key');
-        })
-
-        
-        document.getElementById('address').onkeydown = function(e) {
             if (e.keyCode === 13) {
                 geoCode();
                 return false;
             }
             return true;
-        };
+        })
+
+        
         positionPicker.start();
         map.panBy(0, 1);
 
