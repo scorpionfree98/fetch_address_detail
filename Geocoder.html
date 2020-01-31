@@ -53,6 +53,7 @@
 <script src="zjs/demoutils.js"></script>
 <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=160cab8ad6c50752175d76e61ef92c50&plugin=AMap.Geocoder"></script>
 <script type="text/javascript" src='https://webapi.amap.com/maps?v=1.4.15&key=160cab8ad6c50752175d76e61ef92c50&plugin=AMap.ToolBar'></script>
+<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=160cab8ad6c50752175d76e61ef92c50&plugin=AMap.Autocomplete"></script>
 <script src="https://webapi.amap.com/ui/1.0/main.js?v=1.0.11"></script>
 <script type="text/javascript">
         
@@ -65,6 +66,11 @@
         var positionPicker = new PositionPicker({
             mode: 'dragMap',
             map: map
+        });
+
+        
+        var auto = new AMap.Autocomplete({
+            input: "address"
         });
 
         
