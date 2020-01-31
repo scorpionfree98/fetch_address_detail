@@ -7,6 +7,18 @@ html {
 * {
   box-sizing: border-box
 }
+
+
+.map {
+  height: 100%;
+  width: 60%;
+  float: left;
+}
+
+
+
+
+
 .input-textarea{
    color:grey;
    height:8em;
@@ -113,6 +125,13 @@ h4 {
   text-decoration: none
 }
 
+
+.input-title {
+  text-align:center;
+  font-weight: bold;
+  font-size:18px;
+}
+
 .input-item {
   position: relative;
   display: -ms-flexbox;
@@ -206,6 +225,10 @@ h4 {
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
   padding: 0.75rem 1.25rem;
+  
+  width: 40%;
+  float: left;
+  height: 100%;
 }
 
 .input-text {
